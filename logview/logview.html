@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width">
+<html>
+<head>
+<title>logview</title>
+</head>
+<body style="overflow-y:scroll; height:window.innerHeight; background-color:#000000; color:#ffffff;">
+<!-- <body> -->
+<div id="msg"></div>
+<script>
+  var msg = document.getElementById("msg");
+  var ws = new WebSocket("ws://localhost:8080/", "logview-conn");
+  var maxViewLine = 100;
+  var nowViewline = 0;
+  
+  ws.onmessage = function(e) {
+    var data = document.createElement("div");
+    data.innerHTML = e.data;
+    msg.appendChild(data);
+    var scroolFlag = true;
+    
+    /*
+    if(document.documentElement.scrollTop==document.documentElement.scrollHeight) {
+      scroolFlag=1;
+    }
+    if (document.body.scrollTop==document.body.scrollHeight) {
+      scroolFlag=1;
+    }
+    */
+    
+    if (scroolFlag) {
+      document.documentElement.scrollTop=document.documentElement.scrollHeight;
+      document.body.scrollTop=document.body.scrollHeight;
+    }
+    
+    if (nowViewline < maxViewLine) {
+        nowViewline ++;
+    } else {
+        var deletenode = document.getElementById("msg").firstChild;
+        document.getElementById("msg").removeChild(deletenode);
+    }
+  };
+</script>
+</body>
+</html>
